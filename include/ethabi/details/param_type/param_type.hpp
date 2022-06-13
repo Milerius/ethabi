@@ -21,6 +21,10 @@ namespace ethabi::details
   {
   };
 
+  struct bytes_t
+  {
+  };
+
   using int_t = st::type<std::size_t, struct int_tag>;
 
   using uint_t = st::type<std::size_t, struct uint_tag>;
@@ -38,8 +42,8 @@ namespace ethabi::details
   template<typename T = rva::self_t>
   using fixed_array_t = std::pair<array_t<T>, std::size_t>;
 
-  using string_t = std::string;
+  using string_t = st::type<std::string, struct string_tag>;
 
-  using param_type =
-      rva::variant<address_t, int_t, uint_t, bool_t, fixed_bytes_t, tuple_t<>, string_t, array_t<>, fixed_array_t<>>;
+  using param_type = rva::
+      variant<address_t, bytes_t, int_t, uint_t, bool_t, fixed_bytes_t, tuple_t<>, string_t, array_t<>, fixed_array_t<>>;
 }  // namespace ethabi::details
