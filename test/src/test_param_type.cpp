@@ -4,6 +4,12 @@
 
 using namespace ethabi;
 
+TEST_CASE("format uint")
+{
+  CHECK_EQ(fmt::format("{}", ethabi::details::uint_t(256)), "uint256");
+  CHECK_EQ(fmt::format("{}", ethabi::details::int_t(64)), "int64");
+}
+
 TEST_CASE("test")
 {
   ethabi::details::param_type v;
