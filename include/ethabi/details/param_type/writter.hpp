@@ -23,3 +23,12 @@ struct fmt::formatter<ethabi::details::int_t> : formatter<std::size_t>
     return fmt::format_to(ctx.out(), "int{}", val.value());
   }
 };
+
+template<>
+struct fmt::formatter<ethabi::details::fixed_bytes> : formatter<std::size_t>
+{
+  static inline auto format(ethabi::details::fixed_bytes val, format_context& ctx)
+  {
+    return fmt::format_to(ctx.out(), "bytes{}", val.value());
+  }
+};
