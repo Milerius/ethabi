@@ -4,35 +4,37 @@
 
 using namespace ethabi;
 
-TEST_SUITE_BEGIN("ethabi");
+TEST_SUITE_BEGIN("ethabi::param_type::test_suite");
 
-TEST_CASE("abi format types")
+TEST_CASE("format_type")
 {
   CHECK_EQ(fmt::format("{}", details::uint_t(256)), "uint256");
   CHECK_EQ(fmt::format("{}", details::int_t(64)), "int64");
-  CHECK_EQ(fmt::format("{}", details::fixed_bytes(32)), "bytes32");
+  CHECK_EQ(fmt::format("{}", details::fixed_bytes_t(32)), "bytes32");
+  CHECK_EQ(fmt::format("{}", details::bool_t(true)), "bool");
 }
 
-TEST_CASE("abi variant type")
+TEST_CASE("variant_type")
 {
-  details::param_type v;
-  v = details::int_t(1);
-  CHECK_EQ(std::holds_alternative<details::int_t>(v), true);
-  v = details::uint_t(2);
-  CHECK_EQ(std::holds_alternative<details::uint_t>(v), true);
-  v = details::address_t();
-  CHECK_EQ(std::holds_alternative<details::address_t>(v), true);
-  v = details::bool_t(true);
-  CHECK_EQ(std::holds_alternative<details::bool_t>(v), true);
-  v = details::fixed_bytes(32);
-  CHECK_EQ(std::holds_alternative<details::fixed_bytes>(v), true);
-  v = std::vector<details::param_type>{ details::int_t(1), details::bool_t(false) };
-  CHECK_EQ(std::holds_alternative<details::tuple_t<details::param_type>>(v), true);
+  details::param_type val;
+  val = details::int_t(1);
+  CHECK_EQ(std::holds_alternative<details::int_t>(val), true);
+  val = details::uint_t(2);
+  CHECK_EQ(std::holds_alternative<details::uint_t>(val), true);
+  val = details::address_t();
+  CHECK_EQ(std::holds_alternative<details::address_t>(val), true);
+  val = details::bool_t(true);
+  CHECK_EQ(std::holds_alternative<details::bool_t>(val), true);
+  constexpr std::size_t nb_bytes = 32;
+  val = details::fixed_bytes_t(nb_bytes);
+  CHECK_EQ(std::holds_alternative<details::fixed_bytes_t>(val), true);
+  val = std::vector<details::param_type>{ details::int_t(1), details::bool_t(false) };
+  CHECK_EQ(std::holds_alternative<details::tuple_t<details::param_type>>(val), true);
   auto ptr = std::make_shared<details::param_type>(details::int_t(1));
-  v = details::array_t<details::param_type>(ptr);
-  CHECK_EQ(std::holds_alternative<details::array_t<details::param_type>>(v), true);
-  v = details::fixed_array_t<details::param_type>(ptr, 2);
-  CHECK_EQ(std::holds_alternative<details::fixed_array_t<details::param_type>>(v), true);
+  val = details::array_t<details::param_type>(ptr);
+  CHECK_EQ(std::holds_alternative<details::array_t<details::param_type>>(val), true);
+  val = details::fixed_array_t<details::param_type>(ptr, 2);
+  CHECK_EQ(std::holds_alternative<details::fixed_array_t<details::param_type>>(val), true);
 }
 
 TEST_SUITE_END();

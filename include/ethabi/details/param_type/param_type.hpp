@@ -27,7 +27,7 @@ namespace ethabi::details
 
   using bool_t = st::type<bool, struct bool_tag>;
 
-  using fixed_bytes = st::type<std::size_t, struct fixed_bytes_tag>;
+  using fixed_bytes_t = st::type<std::size_t, struct fixed_bytes_tag>;
 
   template<typename T = rva::self_t>
   using tuple_t = std::vector<T>;
@@ -41,5 +41,5 @@ namespace ethabi::details
   using string_t = std::string;
 
   using param_type =
-      rva::variant<address_t, int_t, uint_t, bool_t, fixed_bytes, tuple_t<>, string_t, array_t<>, fixed_array_t<>>;
+      rva::variant<address_t, int_t, uint_t, bool_t, fixed_bytes_t, tuple_t<>, string_t, array_t<>, fixed_array_t<>>;
 }  // namespace ethabi::details
