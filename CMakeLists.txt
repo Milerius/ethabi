@@ -160,11 +160,14 @@ include(cmake/Doxygen.cmake)
 
 # Identify and link with the specific "packages" the project uses
 #find_package(package_name package_version REQUIRED package_type [other_options])
+
 find_package(fmt CONFIG REQUIRED)
+find_package(range-v3 CONFIG REQUIRED)
 target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE
         fmt::fmt
+        range-v3
 )
 #if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
 #  target_link_libraries(

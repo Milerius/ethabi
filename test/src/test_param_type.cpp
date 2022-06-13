@@ -1,5 +1,7 @@
 #include <doctest/doctest.h>
 
+#include <iostream>
+
 #include "ethabi/ethabi.hpp"
 
 using namespace ethabi;
@@ -15,6 +17,27 @@ TEST_CASE("format_type")
   CHECK_EQ(fmt::format("{}", details::string_t("42")), "string");
   CHECK_EQ(fmt::format("{}", details::bytes_t{}), "bytes");
   CHECK_EQ(fmt::format("{}", details::address_t{}), "address");
+}
+
+TEST_CASE("format_variant")
+{
+  details::param_type val;
+  val = details::int_t(64);
+  CHECK_EQ(details::format(val), "int64");
+  val = details::uint_t(256);
+  CHECK_EQ(details::format(val), "uint256");
+  auto ptr = std::make_shared<details::param_type>(details::int_t(32));
+  val = details::fixed_array_t<details::param_type>(ptr, 2);
+  CHECK_EQ(details::format(val), "int32[2]");
+  val = details::array_t<details::param_type>(ptr);
+  CHECK_EQ(details::format(val), "int32[]");
+  val = std::vector<details::param_type>{ details::int_t(32), details::bool_t(false) };
+  CHECK_EQ(details::format(val), "(int32,bool)");
+
+  // complex
+  auto array = details::array_t<details::param_type>(std::make_shared<details::param_type>(details::bool_t(true)));
+  ptr = std::make_shared<details::param_type>(details::array_t<details::param_type>(array));
+  CHECK_EQ(details::format(details::fixed_array_t<details::param_type>(ptr, 2)), "bool[][2]");
 }
 
 TEST_CASE("variant_type")
