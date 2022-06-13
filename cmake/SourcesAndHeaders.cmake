@@ -1,5 +1,8 @@
 set(sources
         src/details/param_type.cpp
+        src/details/writter.cpp
+        src/details/reader.cpp
+        src/error.cpp
         )
 
 set(exe_sources
@@ -13,5 +16,6 @@ set(headers
         )
 
 set(test_sources
+        src/main.cpp
         src/test_param_type.cpp
         )
