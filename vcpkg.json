@@ -1,10 +1,11 @@
 {
-  "name": "project",
+  "name": "ethabi",
   "version-string": "0.0.1",
   "dependencies": [
     "doctest",
     "fmt",
     "nlohmann-json",
-    "range-v3"
+    "range-v3",
+    "tl-expected"
   ]
 }
