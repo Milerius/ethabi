@@ -3,10 +3,11 @@
 /// Deps Headers
 #include <fmt/format.h>
 
-#include <range/v3/view/iota.hpp>
-#include <range/v3/view/zip.hpp>
+#include <range/v3/view/enumerate.hpp>
+#include <range/v3/view/join.hpp>
 
 /// Project Headers
+#include "../meta/is_any_of.hpp"
 #include "param_type.hpp"
 
 template<>
@@ -90,9 +91,7 @@ namespace ethabi::details
     auto visit_functor = [&result, serialize_tuple_content](auto&& arg)
     {
       using T = std::remove_cvref_t<decltype(arg)>;
-      if constexpr (
-          std::is_same_v<T, int_t> || std::is_same_v<T, uint_t> || std::is_same_v<T, address_t> ||
-          std::is_same_v<T, bytes_t> || std::is_same_v<T, bool_t> || std::is_same_v<T, fixed_bytes_t>)
+      if constexpr (meta::is_any_of<T, int_t, uint_t, address_t, bytes_t, bool_t, fixed_bytes_t>)
       {
         result = fmt::format("{}", arg);
       }
@@ -113,15 +112,22 @@ namespace ethabi::details
       else if constexpr (std::is_same_v<T, tuple_t<details::param_type>>)
       {
         using namespace ranges::views;
-        for (auto&& [cur, idx] : zip(arg, ints(0u, ranges::unreachable)))
+        if (serialize_tuple_content)
         {
-          result.append(format(cur, serialize_tuple_content));
-          if (idx < arg.size() - 1)
+          for (auto&& [idx, cur] : ranges::views::enumerate(arg))
           {
-            result.append(",");
+            result.append(format(cur, serialize_tuple_content));
+            if (idx < arg.size() - 1)
+            {
+              result.append(",");
+            }
           }
+          result = fmt::format("({})", result);
         }
-        result = fmt::format("({})", result);
+      }
+      else
+      {
+        result = "tuple";
       }
     };
     rva::visit(visit_functor, pt);
