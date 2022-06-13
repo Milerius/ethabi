@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.15)
 # Project details
 #
 
+option(ENABLE_VCPKG "Enable the Vcpkg package manager for this project." ON)
+include(cmake/Vcpkg.cmake)
+
 project(
   "Project"
   VERSION 0.1.0
@@ -52,7 +55,6 @@ endif()
 #
 
 include(cmake/Conan.cmake)
-include(cmake/Vcpkg.cmake)
 
 #
 # Create library, setup header and source files

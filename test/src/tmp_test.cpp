@@ -1,15 +1,9 @@
 #include "project/tmp.hpp"
 
-#include <gtest/gtest.h>
+#include <doctest/doctest.h>
 
-TEST(TmpAddTest, CheckValues)
-{
-  ASSERT_EQ(tmp::add(1, 2), 3);
-  EXPECT_TRUE(true);
-}
+#include <iostream>
 
-int main(int argc, char **argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+TEST_CASE("test") {
+  std::cout << "test\n";
 }
