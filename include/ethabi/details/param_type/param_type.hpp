@@ -16,22 +16,15 @@ namespace ethabi::details
   /// https://docs.soliditylang.org/en/latest/abi-spec.html#types
   /// Ethereum ABI params.
   /// https://github.com/rust-ethereum/ethabi/blob/master/ethabi/src/param_type/param_type.rs
-
-  struct address_t
-  {
-  };
-
-  struct bytes_t
-  {
-  };
-
+  using address_t = st::type<std::size_t, struct address_tag, st::equality_comparable>;
+  using bytes_t = st::type<std::size_t, struct bytes_tag, st::equality_comparable>;
   using int_t = st::type<std::size_t, struct int_tag>;
 
   using uint_t = st::type<std::size_t, struct uint_tag>;
 
   using bool_t = st::type<bool, struct bool_tag>;
 
-  using fixed_bytes_t = st::type<std::size_t, struct fixed_bytes_tag>;
+  using fixed_bytes_t = st::type<std::size_t, struct fixed_bytes_tag, st::equality_comparable>;
 
   template<typename T = rva::self_t>
   using tuple_t = std::vector<T>;

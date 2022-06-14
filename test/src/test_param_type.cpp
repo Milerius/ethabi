@@ -20,6 +20,20 @@ TEST_CASE("format_type")
   CHECK_EQ(fmt::format("{}", details::address_t{}), "address");
 }
 
+TEST_CASE("read_param")
+{
+  using namespace details::param_type_literals;
+  auto functor = []<typename T>(T value, const std::string& name)
+  {
+    auto result = details::read(name);
+    CHECK(result.has_value());
+    CHECK_EQ(std::get<T>(result.value()), value);
+  };
+  functor(details::address_t(), "address");
+  functor(details::bytes_t(), "bytes");
+  functor(32_fb, "bytes32");
+}
+
 TEST_CASE("format_variant")
 {
   using namespace details::param_type_literals;
