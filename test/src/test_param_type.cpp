@@ -52,6 +52,24 @@ TEST_CASE("read_array_param")
   };
   functor(array_t(details::make_shared(details::address_t())), "address[]");
   functor(array_t(details::make_shared(details::uint_t(256))), "uint[]");
+  functor(array_t(details::make_shared(details::bytes_t())), "bytes[]");
+  functor(array_t(details::make_shared(array_t(details::make_shared(details::bool_t())))), "bool[][]");
+}
+
+TEST_CASE("read_fixed_array_param")
+{
+  using fixed_array_t = details::fixed_array_t<details::param_type>;
+  auto functor = []<typename T>(T value, const std::string& name)
+  {
+    auto result = details::read(name);
+    CHECK(result.has_value());
+    details::param_type value_to_check = std::get<T>(result.value());
+    CHECK_EQ(details::format(value), details::format(value_to_check));
+  };
+  functor(fixed_array_t(details::make_shared(details::address_t()), 2), "address[2]");
+  functor(fixed_array_t(details::make_shared(details::bool_t()), 17), "bool[17]");
+  functor(
+      fixed_array_t(details::make_shared(fixed_array_t(details::make_shared(details::bytes_t()), 45)), 3), "bytes[45][3]");
 }
 
 TEST_CASE("format_variant")
