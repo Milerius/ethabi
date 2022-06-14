@@ -31,7 +31,7 @@ namespace ethabi::details
     {
       case parser_token::right_parenthesis:
       {
-        if (!name.starts_with(')'))
+        if (!name.starts_with(static_cast<char>(parser_token::left_parenthesis)))
         {
           return tl::make_unexpected(ethabi::error::param_type_read::invalid_name);
         }
@@ -70,7 +70,7 @@ namespace ethabi::details
               }
               else if (nested == 0)
               {
-                auto sub = name.substr(last_item, pos);
+                auto sub = name.substr(last_item, pos - last_item);
                 if (auto result = read(sub); result)
                 {
                   subtypes.emplace_back(result.value());
@@ -114,7 +114,7 @@ namespace ethabi::details
               // If the item is in the top level of the tuple insert it into subtypes
               else if (nested == 1)
               {
-                auto sub = name.substr(last_item, pos);
+                auto sub = name.substr(last_item, pos - 1);
                 if (auto subtype = read(sub); subtype)
                 {
                   subtypes.emplace_back(subtype.value());
