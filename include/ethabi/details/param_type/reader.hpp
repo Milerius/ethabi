@@ -1,7 +1,7 @@
 #pragma once
 
 // C++ System headers
-#include <string>  // std::string
+#include <string> // std::string
 
 // Deps headers
 #include <tl/expected.hpp>
@@ -11,7 +11,7 @@
 
 namespace ethabi::details
 {
-  using read_result_t = tl::expected<param_type, ethabi::error::param_type_read>;
+    using read_result_t = tl::expected<param_type, ethabi::error::param_type_read>;
 
-  [[maybe_unused]] read_result_t read(const std::string& name);
-}  // namespace ethabi::details
+    [[maybe_unused]] read_result_t read(const std::string& name);
+} // namespace ethabi::details

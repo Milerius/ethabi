@@ -1,6 +1,7 @@
 #include "ethabi/ethabi.hpp"
 
-int foo()
+int
+foo()
 {
-  return 0;
+    return 0;
 }
