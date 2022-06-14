@@ -64,13 +64,13 @@ namespace ethabi::details
               {
                 return tl::make_unexpected(ethabi::error::param_type_read::invalid_name);
               }
-              if (name.substr(last_item, pos).empty())
+              if (std::string(begin(name) + static_cast<long>(last_item), begin(name) + static_cast<long>(pos)).empty())
               {
                 last_item = pos + 1;
               }
               else if (nested == 0)
               {
-                auto sub = name.substr(last_item, pos - last_item);
+                auto sub = std::string(begin(name) + static_cast<long>(last_item), begin(name) + static_cast<long>(pos));
                 if (auto result = read(sub); result)
                 {
                   subtypes.emplace_back(result.value());
@@ -79,7 +79,7 @@ namespace ethabi::details
               }
               else if (nested > 0)
               {
-                auto sub = name.substr(pos + 1, name.size());
+                auto sub = std::string(begin(name) + static_cast<long>(pos) + 1, end(name));
                 for (auto&& [_, cur] : ranges::views::enumerate(sub))
                 {
                   if (cur == ',' || cur == ')')
@@ -88,13 +88,15 @@ namespace ethabi::details
                   }
                   pos += 1;
                 }
-                auto inner_tuple = name.substr(top_level_paren_open, pos);
+                auto inner_tuple = std::string(
+                    begin(name) + static_cast<long>(top_level_paren_open), begin(name) + static_cast<long>(pos) + 1);
                 if (auto subtype = read(inner_tuple); subtype)
                 {
                   if (nested > 1)
                   {
-                    subtypes.emplace_back(subtype.value());
-                    subtypes.emplace_back(subtuples[static_cast<unsigned long>(nested - 2)]);
+                    auto subtuple = subtuples[static_cast<unsigned long>(nested - 2)];
+                    subtuple.emplace_back(std::get<tuple_t<param_type>>(subtype.value()));
+                    subtypes.emplace_back(subtuple);
                   }
                   else
                   {
@@ -107,14 +109,15 @@ namespace ethabi::details
             }
             case parser_token::comma:
             {
-              if (name.substr(last_item, pos).empty())
+              auto str = std::string(begin(name) + static_cast<long>(last_item), begin(name) + static_cast<long>(pos));
+              if (str.empty())
               {
                 last_item = pos + 1;
               }
               // If the item is in the top level of the tuple insert it into subtypes
               else if (nested == 1)
               {
-                auto sub = name.substr(last_item, pos - 1);
+                auto sub = std::string(begin(name) + static_cast<long>(last_item), begin(name) + static_cast<long>(pos));
                 if (auto subtype = read(sub); subtype)
                 {
                   subtypes.emplace_back(subtype.value());
@@ -125,7 +128,7 @@ namespace ethabi::details
               // insert it into the subtuple vector for the current depth level
               else if (nested > 1)
               {
-                auto sub = name.substr(last_item, pos);
+                auto sub = std::string(begin(name) + static_cast<long>(last_item), begin(name) + static_cast<long>(pos));
                 if (auto subtype = read(sub); subtype)
                 {
                   subtuples[static_cast<unsigned long>(nested - 2)].emplace_back(subtype.value());
