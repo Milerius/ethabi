@@ -145,7 +145,7 @@ namespace ethabi::details
         auto reversed = std::string(name.rbegin() + 1, name.rend());
         auto take_while_functor = [](char cur) { return static_cast<parser_token>(cur) != parser_token::left_bracket; };
         std::string num = rg::take_while(reversed, take_while_functor) | rg::reverse | ranges::to<std::string>();
-        std::size_t count = num.size();
+        std::size_t count = name.size();
         if (num.empty())
         {
           if (auto subtype = read(name.substr(0, count - 2)); subtype)
@@ -197,6 +197,16 @@ namespace ethabi::details
     {
       auto nb_bytes = static_cast<std::size_t>(std::stoi(name.substr(sizeof("bytes") - 1)));
       return fixed_bytes_t(nb_bytes);
+    }
+    if (name.starts_with("int"))
+    {
+      auto size_integer = static_cast<std::size_t>(std::stoi(name.substr(sizeof("int") - 1)));
+      return int_t(size_integer);
+    }
+    if (name.starts_with("uint"))
+    {
+      auto size_integer = static_cast<std::size_t>(std::stoi(name.substr(sizeof("uint") - 1)));
+      return uint_t(size_integer);
     }
     return uint_t(8);
   }

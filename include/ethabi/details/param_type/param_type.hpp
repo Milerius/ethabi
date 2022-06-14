@@ -18,12 +18,9 @@ namespace ethabi::details
   /// https://github.com/rust-ethereum/ethabi/blob/master/ethabi/src/param_type/param_type.rs
   using address_t = st::type<std::size_t, struct address_tag, st::equality_comparable>;
   using bytes_t = st::type<std::size_t, struct bytes_tag, st::equality_comparable>;
-  using int_t = st::type<std::size_t, struct int_tag>;
-
-  using uint_t = st::type<std::size_t, struct uint_tag>;
-
-  using bool_t = st::type<bool, struct bool_tag>;
-
+  using int_t = st::type<std::size_t, struct int_tag, st::equality_comparable>;
+  using uint_t = st::type<std::size_t, struct uint_tag, st::equality_comparable>;
+  using bool_t = st::type<bool, struct bool_tag, st::equality_comparable>;
   using fixed_bytes_t = st::type<std::size_t, struct fixed_bytes_tag, st::equality_comparable>;
 
   template<typename T = rva::self_t>
@@ -35,7 +32,7 @@ namespace ethabi::details
   template<typename T = rva::self_t>
   using fixed_array_t = std::pair<array_t<T>, std::size_t>;
 
-  using string_t = st::type<std::string, struct string_tag>;
+  using string_t = st::type<std::string, struct string_tag, st::equality_comparable>;
 
   using param_type = rva::
       variant<address_t, bytes_t, int_t, uint_t, bool_t, fixed_bytes_t, tuple_t<>, string_t, array_t<>, fixed_array_t<>>;
