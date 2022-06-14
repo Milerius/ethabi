@@ -95,7 +95,7 @@ namespace ethabi::details
                   if (nested > 1)
                   {
                     auto subtuple = subtuples[static_cast<unsigned long>(nested - 2)];
-                    subtuple.emplace_back(std::get<tuple_t<param_type>>(subtype.value()));
+                    subtuple.emplace_back(subtype.value());
                     subtypes.emplace_back(subtuple);
                   }
                   else

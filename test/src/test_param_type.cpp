@@ -142,6 +142,38 @@ TEST_CASE("read_complex_nested_struct_param")
       "(address,bool,(bool,uint256,(bool,uint256)),(bool,uint256))");
 }
 
+TEST_CASE("read_inner_tuple_array_param")
+{
+  using namespace details::param_type_literals;
+  using tuple_t = details::tuple_t<details::param_type>;
+  using array_t = details::array_t<details::param_type>;
+  auto functor = []<typename T>(T value, const std::string& name)
+  {
+    auto result = details::read(name);
+    CHECK(result.has_value());
+    details::param_type value_to_check = std::get<T>(result.value());
+    CHECK_EQ(details::format(value), details::format(value_to_check));
+  };
+  functor(array_t(details::make_shared(tuple_t{ 256_u, 32_fb })), "(uint256,bytes32)[]");
+}
+
+TEST_CASE("read_nested_tuple_array_param")
+{
+  using namespace details::param_type_literals;
+  using tuple_t = details::tuple_t<details::param_type>;
+  using array_t = details::array_t<details::param_type>;
+  auto functor = []<typename T>(T value, const std::string& name)
+  {
+    auto result = details::read(name);
+    CHECK(result.has_value());
+    details::param_type value_to_check = std::get<T>(result.value());
+    CHECK_EQ(details::format(value), details::format(value_to_check));
+  };
+  functor(
+      tuple_t{ array_t(details::make_shared(tuple_t{ 256_u, 32_fb })), details::address_t{} },
+      "((uint256,bytes32)[],address)");
+}
+
 TEST_CASE("format_variant")
 {
   using namespace details::param_type_literals;
