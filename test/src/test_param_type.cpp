@@ -113,24 +113,24 @@ TEST_CASE("format_variant")
     val = 256_u;
     CHECK_EQ(details::format(val), "uint256");
     auto ptr = details::make_shared(32_i);
-    val      = details::fixed_array_t<details::param_type>(ptr, 2);
+    val      = fixed_array_t(ptr, 2);
     CHECK_EQ(details::format(val), "int32[2]");
-    val = details::array_t<details::param_type>(ptr);
+    val = array_t(ptr);
     CHECK_EQ(details::format(val), "int32[]");
-    val = std::vector<details::param_type>{32_i, details::bool_t(false)};
+    val = tuple_t{32_i, details::bool_t(false)};
     CHECK_EQ(details::format(val), "(int32,bool)");
 
     // complex
-    auto array = details::array_t<details::param_type>(details::make_shared(details::bool_t(true)));
-    ptr        = details::make_shared(details::array_t<details::param_type>(array));
-    CHECK_EQ(details::format(details::fixed_array_t<details::param_type>(ptr, 2)), "bool[][2]");
+    auto array = array_t(details::make_shared(details::bool_t(true)));
+    ptr        = details::make_shared(array_t(array));
+    CHECK_EQ(details::format(fixed_array_t(ptr, 2)), "bool[][2]");
 
     // complex tupled
-    auto tuple         = std::vector<details::param_type>{256_i, 256_u};
+    auto tuple         = tuple_t{256_i, 256_u};
     auto fixed_bytes   = 32_fb;
-    array              = details::array_t<details::param_type>(details::make_shared(tuple));
-    auto another_tuple = std::vector<details::param_type>{array, fixed_bytes};
-    val                = details::array_t<details::param_type>(details::make_shared(another_tuple));
+    array              = array_t(details::make_shared(tuple));
+    auto another_tuple = tuple_t{array, fixed_bytes};
+    val                = array_t(details::make_shared(another_tuple));
     CHECK_EQ(details::format(val), "((int256,uint256)[],bytes32)[]");
 }
 
@@ -147,13 +147,13 @@ TEST_CASE("variant_type")
     CHECK_EQ(std::holds_alternative<details::bool_t>(val), true);
     val = 32_fb;
     CHECK_EQ(std::holds_alternative<details::fixed_bytes_t>(val), true);
-    val = std::vector<details::param_type>{1_i, details::bool_t(false)};
+    val = tuple_t{1_i, details::bool_t(false)};
     CHECK_EQ(std::holds_alternative<details::tuple_t<details::param_type>>(val), true);
-    auto ptr = details::make_shared(1_i);
-    val      = details::array_t<details::param_type>(ptr);
-    CHECK_EQ(std::holds_alternative<details::array_t<details::param_type>>(val), true);
-    val = details::fixed_array_t<details::param_type>(ptr, 2);
-    CHECK_EQ(std::holds_alternative<details::fixed_array_t<details::param_type>>(val), true);
+    auto ptr = array_t(details::make_shared(1_i));
+    val      = array_t(ptr);
+    CHECK_EQ(std::holds_alternative<array_t>(val), true);
+    val = fixed_array_t(ptr, 2);
+    CHECK_EQ(std::holds_alternative<fixed_array_t>(val), true);
     val = details::string_t("42");
     CHECK_EQ(std::holds_alternative<details::string_t>(val), true);
 }
