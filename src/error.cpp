@@ -30,10 +30,9 @@ namespace ethabi::error
         return "param_type";
     }
 
+    std::error_code
+    make_error_code(ethabi::error::param_type_read error)
+    {
+        return {static_cast<int>(error), ethabi::error::param_type_read_category{}};
+    }
 } // namespace ethabi::error
-
-std::error_code
-make_error_code(ethabi::error::param_type_read error)
-{
-    return {static_cast<int>(error), ethabi::error::param_type_read_category{}};
-}

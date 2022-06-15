@@ -5,12 +5,32 @@
 #include "ethabi/details/param_type.hpp"
 
 using namespace ethabi;
+using namespace ethabi::details::param_type_literals;
+using array_t       = details::array_t<details::param_type>;
+using fixed_array_t = details::fixed_array_t<details::param_type>;
+using tuple_t       = details::tuple_t<details::param_type>;
+
+namespace
+{
+    template <typename T>
+    inline void
+    check_format(T value, const std::string& name)
+    {
+        details::read(name).map([&value](auto&& val) { CHECK_EQ(details::format(val), details::format(value)); });
+    }
+
+    template <typename T>
+    inline void
+    check_eq(T value, const std::string& name)
+    {
+        details::read(name).map([&value](auto&& val) { CHECK_EQ(val, value); });
+    }
+} // namespace
 
 TEST_SUITE_BEGIN("ethabi::param_type::test_suite");
 
 TEST_CASE("format_type")
 {
-    using namespace details::param_type_literals;
     CHECK_EQ(fmt::format("{}", 256_u), "uint256");
     CHECK_EQ(fmt::format("{}", 64_i), "int64");
     CHECK_EQ(fmt::format("{}", 32_fb), "bytes32");
@@ -22,116 +42,52 @@ TEST_CASE("format_type")
 
 TEST_CASE("read_param")
 {
-    using namespace details::param_type_literals;
-    auto functor = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        CHECK_EQ(std::get<T>(result.value()), value);
-    };
-    functor(details::address_t(), "address");
-    functor(details::bytes_t(), "bytes");
-    functor(details::fixed_bytes_t(32), "bytes32");
-    functor(details::bool_t(), "bool");
-    functor(details::string_t(), "string");
-    functor(details::int_t(256), "int");
-    functor(details::uint_t(256), "uint");
-    functor(details::uint_t(32), "uint32");
-    functor(details::int_t(32), "int32");
+    check_eq(details::address_t(), "address");
+    check_eq(details::bytes_t(), "bytes");
+    check_eq(details::fixed_bytes_t(32), "bytes32");
+    check_eq(details::bool_t(), "bool");
+    check_eq(details::string_t(), "string");
+    check_eq(details::int_t(256), "int");
+    check_eq(details::uint_t(256), "uint");
+    check_eq(details::uint_t(32), "uint32");
+    check_eq(details::int_t(32), "int32");
 }
 
 TEST_CASE("read_array_param")
 {
-    using array_t = details::array_t<details::param_type>;
-    auto functor  = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-    functor(array_t(details::make_shared(details::address_t())), "address[]");
-    functor(array_t(details::make_shared(details::uint_t(256))), "uint[]");
-    functor(array_t(details::make_shared(details::bytes_t())), "bytes[]");
-    functor(array_t(details::make_shared(array_t(details::make_shared(details::bool_t())))), "bool[][]");
+    check_format(array_t(details::make_shared(details::address_t())), "address[]");
+    check_format(array_t(details::make_shared(details::uint_t(256))), "uint[]");
+    check_format(array_t(details::make_shared(details::bytes_t())), "bytes[]");
+    check_format(array_t(details::make_shared(array_t(details::make_shared(details::bool_t())))), "bool[][]");
 }
 
 TEST_CASE("read_fixed_array_param")
 {
-    using fixed_array_t = details::fixed_array_t<details::param_type>;
-    auto functor        = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-    functor(fixed_array_t(details::make_shared(details::address_t()), 2), "address[2]");
-    functor(fixed_array_t(details::make_shared(details::bool_t()), 17), "bool[17]");
-    functor(fixed_array_t(details::make_shared(fixed_array_t(details::make_shared(details::bytes_t()), 45)), 3), "bytes[45][3]");
+    check_format(fixed_array_t(details::make_shared(details::address_t()), 2), "address[2]");
+    check_format(fixed_array_t(details::make_shared(details::bool_t()), 17), "bool[17]");
+    check_format(fixed_array_t(details::make_shared(fixed_array_t(details::make_shared(details::bytes_t()), 45)), 3), "bytes[45][3]");
 }
 
 TEST_CASE("read_mixed_array_param")
 {
-    using fixed_array_t = details::fixed_array_t<details::param_type>;
-    using array_t       = details::array_t<details::param_type>;
-    auto functor        = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-
-    functor(fixed_array_t(details::make_shared(array_t(details::make_shared(details::bool_t()))), 3), "bool[][3]");
-    functor(array_t(details::make_shared(fixed_array_t(details::make_shared(details::bool_t()), 3))), "bool[3][]");
+    check_format(fixed_array_t(details::make_shared(array_t(details::make_shared(details::bool_t()))), 3), "bool[][3]");
+    check_format(array_t(details::make_shared(fixed_array_t(details::make_shared(details::bool_t()), 3))), "bool[3][]");
 }
 
 TEST_CASE("read_struct_param")
 {
-    using namespace details::param_type_literals;
-    using fixed_array_t = details::fixed_array_t<details::param_type>;
-    using tuple_t       = details::tuple_t<details::param_type>;
-    auto functor        = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-
-    functor(tuple_t{details::address_t{}, details::bool_t{}}, "(address,bool)");
-    functor(tuple_t{fixed_array_t(details::make_shared(details::bool_t{}), 3), 256_u}, "(bool[3],uint256)");
+    check_format(tuple_t{details::address_t{}, details::bool_t{}}, "(address,bool)");
+    check_format(tuple_t{fixed_array_t(details::make_shared(details::bool_t{}), 3), 256_u}, "(bool[3],uint256)");
 }
 
 TEST_CASE("read_nested_struct_param")
 {
-    using namespace details::param_type_literals;
-    using tuple_t = details::tuple_t<details::param_type>;
-    auto functor  = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-
-    functor(tuple_t{details::address_t{}, details::bool_t{}, tuple_t{details::bool_t{}, 256_u}}, "(address,bool,(bool,uint256))");
+    check_format(tuple_t{details::address_t{}, details::bool_t{}, tuple_t{details::bool_t{}, 256_u}}, "(address,bool,(bool,uint256))");
 }
 
 TEST_CASE("read_complex_nested_struct_param")
 {
-    using namespace details::param_type_literals;
-    using tuple_t = details::tuple_t<details::param_type>;
-    auto functor  = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-
-    functor(
+    check_format(
         tuple_t{
             details::address_t{}, details::bool_t{}, tuple_t{details::bool_t{}, 256_u, tuple_t{details::bool_t{}, 256_u}}, tuple_t{details::bool_t{}, 256_u}},
         "(address,bool,(bool,uint256,(bool,uint256)),(bool,uint256))");
@@ -139,37 +95,18 @@ TEST_CASE("read_complex_nested_struct_param")
 
 TEST_CASE("read_inner_tuple_array_param")
 {
-    using namespace details::param_type_literals;
-    using tuple_t = details::tuple_t<details::param_type>;
-    using array_t = details::array_t<details::param_type>;
-    auto functor  = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-    functor(array_t(details::make_shared(tuple_t{256_u, 32_fb})), "(uint256,bytes32)[]");
+    //
+    check_format(array_t(details::make_shared(tuple_t{256_u, 32_fb})), "(uint256,bytes32)[]");
 }
 
 TEST_CASE("read_nested_tuple_array_param")
 {
-    using namespace details::param_type_literals;
-    using tuple_t = details::tuple_t<details::param_type>;
-    using array_t = details::array_t<details::param_type>;
-    auto functor  = []<typename T>(T value, const std::string& name)
-    {
-        auto result = details::read(name);
-        CHECK(result.has_value());
-        details::param_type value_to_check = std::get<T>(result.value());
-        CHECK_EQ(details::format(value), details::format(value_to_check));
-    };
-    functor(tuple_t{array_t(details::make_shared(tuple_t{256_u, 32_fb})), details::address_t{}}, "((uint256,bytes32)[],address)");
+    //
+    check_format(tuple_t{array_t(details::make_shared(tuple_t{256_u, 32_fb})), details::address_t{}}, "((uint256,bytes32)[],address)");
 }
 
 TEST_CASE("format_variant")
 {
-    using namespace details::param_type_literals;
     details::param_type val;
     val = 64_i;
     CHECK_EQ(details::format(val), "int64");
@@ -199,7 +136,6 @@ TEST_CASE("format_variant")
 
 TEST_CASE("variant_type")
 {
-    using namespace details::param_type_literals;
     details::param_type val;
     val = details::int_t(1);
     CHECK_EQ(std::holds_alternative<details::int_t>(val), true);

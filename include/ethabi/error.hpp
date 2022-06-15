@@ -8,6 +8,8 @@ namespace ethabi::error
     {
         invalid_name
     };
+
+    std::error_code make_error_code(ethabi::error::param_type_read error);
 } // namespace ethabi::error
 
 namespace std
@@ -17,5 +19,3 @@ namespace std
     {
     };
 } // namespace std
-
-std::error_code make_error_code(ethabi::error::param_type_read error);
