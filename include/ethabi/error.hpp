@@ -6,7 +6,8 @@ namespace ethabi::error
 {
     enum class param_type_read
     {
-        invalid_name
+        invalid_name,
+        unable_to_deserialize
     };
 
     std::error_code make_error_code(ethabi::error::param_type_read error);

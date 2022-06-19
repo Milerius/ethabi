@@ -2,6 +2,7 @@ set(sources
         src/details/param_type.cpp
         src/details/writter.cpp
         src/details/reader.cpp
+        src/details/deserialize.cpp
         src/error.cpp
         )
 

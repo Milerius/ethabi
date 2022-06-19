@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include <iostream>
+#include <nlohmann/json.hpp>
 
 #include "ethabi/details/param_type.hpp"
 
@@ -28,6 +28,25 @@ namespace
 } // namespace
 
 TEST_SUITE_BEGIN("ethabi::param_type::test_suite");
+
+TEST_CASE("deserialize")
+{
+    auto    j              = R"(["address", "bytes", "bytes32", "bool", "string", "int", "uint", "address[]", "uint[3]", "bool[][5]", "tuple[]"])"_json;
+    auto    value          = ethabi::details::deserialize(j).value();
+    tuple_t expected_tuple = {
+        details::address_t{},
+        details::bytes_t{},
+        32_fb,
+        details::bool_t{},
+        details::string_t{},
+        256_i,
+        256_u,
+        array_t(details::make_shared(details::address_t{})),
+        fixed_array_t(details::make_shared(256_u), 3),
+        fixed_array_t(details::make_shared(array_t(details::make_shared(details::bool_t{}))), 5),
+        array_t(details::make_shared(tuple_t{}))};
+    CHECK_EQ(details::format(value), details::format(expected_tuple));
+}
 
 TEST_CASE("format_type")
 {

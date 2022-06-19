@@ -19,6 +19,8 @@ namespace ethabi::error
         {
         case param_type_read::invalid_name:
             return "invalid_name";
+        case param_type_read::unable_to_deserialize:
+            return "deserialize error";
         default:
             return "(unrecognized error)";
         }

@@ -163,11 +163,13 @@ include(cmake/Doxygen.cmake)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE
         fmt::fmt
         range-v3
+        nlohmann_json::nlohmann_json
 )
 #if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
 #  target_link_libraries(
