@@ -1,6 +1,7 @@
 #pragma once
 
-#include "param_type.hpp"
+/// Project Headers
+#include "ethabi/details/param_type/param_type.hpp"
 
 namespace ethabi::details
 {

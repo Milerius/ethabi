@@ -1,10 +1,13 @@
 #pragma once
 
+/// C++ System Headers
 #include <system_error>
 
+/// Deps Headers
 #include <nlohmann/json_fwd.hpp>
 #include <tl/expected.hpp>
 
+/// Project Headers
 #include "ethabi/details/param_type/param_type.hpp"
 
 namespace ethabi::details

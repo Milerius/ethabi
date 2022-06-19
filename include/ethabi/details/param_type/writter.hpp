@@ -2,13 +2,12 @@
 
 /// Deps Headers
 #include <fmt/format.h>
-
 #include <range/v3/view/enumerate.hpp>
 #include <range/v3/view/join.hpp>
 
 /// Project Headers
-#include "../meta/is_any_of.hpp"
-#include "param_type.hpp"
+#include "ethabi/details/param_type/param_type.hpp"
+#include "ethcore/details/meta/is_any_of.hpp"
 
 template <>
 struct fmt::formatter<ethabi::details::uint_t> : formatter<std::size_t>

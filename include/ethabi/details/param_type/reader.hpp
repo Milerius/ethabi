@@ -1,11 +1,12 @@
 #pragma once
 
-// C++ System headers
+/// C++ System headers
 #include <string> // std::string
 
-// Deps headers
+/// Deps headers
 #include <tl/expected.hpp>
 
+/// Project Headers
 #include "ethabi/details/param_type/param_type.hpp"
 #include "ethabi/error.hpp"
 

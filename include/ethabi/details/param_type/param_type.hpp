@@ -8,8 +8,8 @@
 #include <string> // std::string
 #include <vector> // std::vector
 
-#include "../rva/rva.hpp"
-#include "../st/st.hpp"
+#include "ethcore/details/rva/rva.hpp"
+#include "ethcore/details/st/st.hpp"
 
 namespace ethabi::details
 {

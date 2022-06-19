@@ -1,5 +1,6 @@
 #pragma once
 
+/// C++ System Headers
 #include <system_error>
 
 namespace ethabi::error
@@ -16,7 +17,7 @@ namespace ethabi::error
 namespace std
 {
     template <>
-    struct is_error_code_enum<ethabi::error::param_type_read> : true_type
+    struct [[maybe_unused]] is_error_code_enum<ethabi::error::param_type_read> : true_type // NOLINT(altera-struct-pack-align)
     {
     };
 } // namespace std
