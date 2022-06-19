@@ -2,7 +2,7 @@
 // Created by sztergbaum roman on 13/06/2022.
 //
 
-#include "ethabi/details/param_type/writter.hpp"
+#include "ethabi/details/param_type/writer.hpp"
 
 namespace ethabi::details
 {
