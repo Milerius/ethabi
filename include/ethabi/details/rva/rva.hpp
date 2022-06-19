@@ -350,7 +350,7 @@ namespace rva
         using type = T<replace_t<Ts, Find, Replace>...>;
     };
 
-    // Add shortcut for rva::variant to avoid replacing into instances of an
+    // Add shortcut for rva::variant to avoid replacing into instances of a
     // rva::variant that's given as a template parameter to another rva::variant
     template <class... Ts, class Find, class Replace>
     struct replace<rva::variant<Ts...>, Find, Replace>

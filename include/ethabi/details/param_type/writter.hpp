@@ -94,5 +94,5 @@ struct fmt::formatter<ethabi::details::address_t>
 
 namespace ethabi::details
 {
-    std::string format(const param_type& pt, bool serialize_tuple_content = true);
+    std::string format(const param_type& value, bool serialize_tuple_content = true);
 } // namespace ethabi::details

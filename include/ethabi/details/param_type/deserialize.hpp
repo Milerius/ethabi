@@ -12,5 +12,5 @@ namespace ethabi::details
     using json         = nlohmann::json;
     using params       = details::tuple_t<param_type>;
     using deser_result = tl::expected<params, std::error_code>;
-    deser_result deserialize(const json& j) noexcept;
+    deser_result deserialize(const json& input) noexcept;
 } // namespace ethabi::details

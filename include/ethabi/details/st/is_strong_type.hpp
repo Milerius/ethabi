@@ -11,7 +11,6 @@ namespace st
         {
             template <typename WrappedT>
             static std::true_type test(const type_base<WrappedT>&);
-
             static std::false_type test(...);
 
             using type = decltype(test(std::declval<const T&>()));

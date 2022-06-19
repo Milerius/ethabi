@@ -7,7 +7,7 @@
 namespace ethabi::details
 {
     std::string
-    format(const param_type& pt, bool serialize_tuple_content)
+    format(const param_type& value, bool serialize_tuple_content)
     {
         std::string result;
         auto        visit_functor = [&result, serialize_tuple_content](auto&& arg)
@@ -46,7 +46,7 @@ namespace ethabi::details
                 result = "tuple";
             }
         };
-        rva::visit(visit_functor, pt);
+        rva::visit(visit_functor, value);
         return result;
     }
 } // namespace ethabi::details

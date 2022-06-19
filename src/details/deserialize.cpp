@@ -2,7 +2,6 @@
 // Created by sztergbaum roman on 15/06/2022.
 //
 
-#include "fmt/printf.h"
 #include <nlohmann/json.hpp>
 
 #include "ethabi/details/param_type/deserialize.hpp"
@@ -113,10 +112,10 @@ namespace
 namespace ethabi::details
 {
     deser_result
-    deserialize(const json& j) noexcept
+    deserialize(const json& input) noexcept
     {
         sax_consumer sec;
-        if (auto result = json::sax_parse(j.dump(), &sec); !result)
+        if (auto result = json::sax_parse(input.dump(), &sec); !result)
         {
             return tl::make_unexpected(error::param_type_read::unable_to_deserialize);
         }
