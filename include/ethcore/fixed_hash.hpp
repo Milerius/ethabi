@@ -10,7 +10,6 @@
 #include <fmt/format.h>
 #include <range/v3/algorithm/all_of.hpp>
 #include <range/v3/range_concepts.hpp>
-#include <range/v3/view/enumerate.hpp>
 #include <range/v3/view/transform.hpp>
 #include <tl/expected.hpp>
 
