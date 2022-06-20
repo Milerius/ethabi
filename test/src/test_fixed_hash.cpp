@@ -11,7 +11,9 @@ using h256 = ethcore::fixed_hash<256 / 8>;
 
 static_assert(sizeof(h256) == 256 / 8);
 
-constexpr auto get_sample_hash() {
+constexpr auto
+get_sample_hash()
+{
     std::array<std::byte, 256 / 8> arr{};
     std::generate(arr.begin(), arr.end(), [n = 0]() mutable { return std::byte(n++); });
     return h256(arr);
@@ -92,8 +94,8 @@ TEST_CASE("covers")
 
 TEST_CASE("hash")
 {
-    constexpr auto hash = get_sample_hash();
-    auto hasher = std::hash<h256>();
+    constexpr auto hash   = get_sample_hash();
+    auto           hasher = std::hash<h256>();
 
     CHECK_EQ(hasher(hash), hasher(hash));
 
@@ -112,7 +114,7 @@ TEST_CASE("hash")
 TEST_CASE("from_str")
 {
     auto sample = get_sample_hash();
-    auto zero = h256();
+    auto zero   = h256();
 
     auto hash = h256::from_str(zero.to_lower_hex()).value();
     CHECK_EQ(hash, zero);
@@ -134,6 +136,8 @@ TEST_CASE("from_str")
 
     result = h256::from_str("000102030405060708090a0b0c0d0e0f");
     CHECK(not result);
+
+    CHECK(ethcore::h160::from_str("0x71C7656EC7ab88b098defB751B7401B5f6d8976F").has_value());
 }
 
 TEST_SUITE_END();
