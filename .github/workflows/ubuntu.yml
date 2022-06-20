@@ -9,6 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   INSTALL_LOCATION: .local
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   build:
