@@ -4,17 +4,19 @@
 #include <array>
 #include <charconv>
 #include <cstddef>
-#include <ranges>
 #include <string>
 
 #include <fmt/format.h>
+#include <range/v3/algorithm/all_of.hpp>
 #include <range/v3/view/enumerate.hpp>
+#include <range/v3/range_concepts.hpp>
 
 namespace ethcore {
 
     namespace details {
+
         template<typename T, typename V>
-        concept range_of = std::ranges::range<T> && std::same_as<V, std::ranges::range_value_t<T>>;
+        concept range_of = ranges::input_range<T> && std::same_as<V, ranges::range_value_t<T>>;
     }
 
     template<std::size_t Bytes>
@@ -55,7 +57,7 @@ namespace ethcore {
         }
 
         [[nodiscard]] constexpr bool is_zero() const noexcept {
-            return std::ranges::all_of(bytes_, [](auto &&value) { return std::to_integer<unsigned char>(value) == 0; });
+            return ranges::all_of(bytes_, [](auto &&value) { return std::to_integer<unsigned char>(value) == 0; });
         }
 
         [[nodiscard]] constexpr const storage &as_array() const noexcept {
