@@ -66,10 +66,14 @@ namespace ethcore
             fixed_hash ret;
             for (std::size_t i = 0; i < Bytes; ++i)
             {
-                std::uint8_t value        = 0;
-                auto         expected_end = view.begin() + (i + 1) * 2;
+                std::uint8_t                      value = 0;
+                constexpr int                     base{16};
+                const std::string_view::size_type end_pos{(i + 1) * 2};
+                const std::string_view::size_type start_pos{i * 2};
+                const char*                       expected_end = view.substr(end_pos, view.size() - end_pos).data();
+                const char*                       first        = view.substr(start_pos, view.size() - start_pos).data();
 
-                auto res = std::from_chars(view.begin() + i * 2, expected_end, value, 16);
+                auto res = std::from_chars(first, expected_end, value, base);
                 if (res.ptr != expected_end)
                 {
                     return tl::make_unexpected(std::errc::invalid_argument);

@@ -14,12 +14,8 @@ namespace meta::details
     struct is_any_of : tester<Us>...
     {
         using this_type = is_any_of<T, Us...>;
-
-#pragma clang diagnostic push
-#pragma ide diagnostic   ignored "NotImplementedFunctions"
         static constexpr void f(tester<T>);
         static constexpr int  f(...);
-#pragma clang diagnostic pop
         static constexpr bool value = std::same_as<void, decltype(f(std::declval<this_type>()))>;
     };
 } // namespace meta::details
