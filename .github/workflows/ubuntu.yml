@@ -29,7 +29,10 @@ jobs:
         key: ${{ runner.os }}-dependencies
 
     - name: configure
-      run: cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION -DProject_ENABLE_CODE_COVERAGE=1
+      run: |
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 777
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 777
+        cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION -DProject_ENABLE_CODE_COVERAGE=1
 
     - name: build
       run: cmake --build build --config $BUILD_TYPE -j4
