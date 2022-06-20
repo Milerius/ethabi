@@ -109,4 +109,31 @@ TEST_CASE("hash")
     CHECK_NE(s.find(h256()), s.end());
 }
 
+TEST_CASE("from_str")
+{
+    auto sample = get_sample_hash();
+    auto zero = h256();
+
+    auto hash = h256::from_str(zero.to_lower_hex()).value();
+    CHECK_EQ(hash, zero);
+
+    hash = h256::from_str(sample.to_lower_hex()).value();
+    CHECK_EQ(hash.to_lower_hex(), sample.to_lower_hex());
+
+    hash = h256::from_str(std::string("0x") + sample.to_lower_hex()).value();
+    CHECK_EQ(hash.to_lower_hex(), sample.to_lower_hex());
+
+    hash = h256::from_str(sample.to_upper_hex()).value();
+    CHECK_EQ(hash, sample);
+
+    hash = h256::from_str(sample.to_upper_hex()).value();
+    CHECK_EQ(hash, sample);
+
+    auto result = h256::from_str("zzz");
+    CHECK(not result);
+
+    result = h256::from_str("000102030405060708090a0b0c0d0e0f");
+    CHECK(not result);
+}
+
 TEST_SUITE_END();

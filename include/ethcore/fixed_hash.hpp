@@ -3,13 +3,14 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
+#include <concepts>
 #include <cstddef>
 #include <string>
 
 #include <fmt/format.h>
 #include <range/v3/algorithm/all_of.hpp>
-#include <range/v3/view/enumerate.hpp>
 #include <range/v3/range_concepts.hpp>
+#include <tl/expected.hpp>
 
 namespace ethcore {
 
@@ -38,6 +39,29 @@ namespace ethcore {
         template<details::range_of<std::byte> R>
         explicit constexpr fixed_hash(R &&r) noexcept {
             std::copy_n(r.begin(), Bytes, bytes_.begin());
+        }
+
+        static tl::expected<fixed_hash, std::errc> from_str(std::string_view view) noexcept {
+            if (view.starts_with("0x")) {
+                view.remove_prefix(2);
+            }
+
+            if (view.length() != Bytes * 2) {
+                return tl::make_unexpected(std::errc::invalid_argument);
+            }
+
+            fixed_hash ret;
+            for (std::size_t i = 0; i < Bytes; ++i) {
+                unsigned char value = 0;
+                auto expected_end = view.begin() + (i + 1) * 2;
+
+                auto res = std::from_chars(view.begin() + i * 2, expected_end, value, 16);
+                if (res.ptr != expected_end) {
+                    return tl::make_unexpected(std::errc::invalid_argument);
+                }
+                ret.bytes_[i] = std::byte(value);
+            }
+            return ret;
         }
 
         [[nodiscard]] constexpr auto begin() const noexcept {
