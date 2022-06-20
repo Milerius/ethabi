@@ -17,6 +17,9 @@ set(headers
         ${PROJECT_SOURCE_DIR}/include/ethabi/details/param_type/deserialize.hpp
         ${PROJECT_SOURCE_DIR}/include/ethabi/details/param_type.hpp
 
+        # ethcore
+        ${PROJECT_SOURCE_DIR}/include/ethcore/fixed_hash.hpp
+
         # ethcore::meta
         ${PROJECT_SOURCE_DIR}/include/ethcore/details/meta/is_any_of.hpp
 
@@ -33,5 +36,6 @@ set(headers
 
 set(test_sources
         ${PROJECT_SOURCE_DIR}/test/src/main.cpp
+        ${PROJECT_SOURCE_DIR}/test/src/test_fixed_hash.cpp
         ${PROJECT_SOURCE_DIR}/test/src/test_param_type.cpp
         )
