@@ -66,8 +66,8 @@ namespace ethcore
             fixed_hash ret;
             for (std::size_t i = 0; i < Bytes; ++i)
             {
-                std::uint8_t value        = 0;
-                auto         expected_end = view.begin() + (i + 1) * 2;
+                std::int8_t value        = 0;
+                auto        expected_end = view.begin() + (i + 1) * 2;
 
                 auto res = std::from_chars(view.begin() + i * 2, expected_end, value, 16);
                 if (res.ptr != expected_end)
