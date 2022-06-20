@@ -66,8 +66,8 @@ namespace ethcore
             fixed_hash ret;
             for (std::size_t i = 0; i < Bytes; ++i)
             {
-                unsigned char value        = 0;
-                auto          expected_end = view.begin() + (i + 1) * 2;
+                std::uint8_t value        = 0;
+                auto         expected_end = view.begin() + (i + 1) * 2;
 
                 auto res = std::from_chars(view.begin() + i * 2, expected_end, value, 16);
                 if (res.ptr != expected_end)
@@ -106,7 +106,7 @@ namespace ethcore
         [[nodiscard]] constexpr bool
         is_zero() const noexcept
         {
-            return ranges::all_of(bytes_, [](auto&& value) { return std::to_integer<unsigned char>(value) == 0; });
+            return ranges::all_of(bytes_, [](auto&& value) { return std::to_integer<std::uint8_t>(value) == 0; });
         }
 
         [[nodiscard]] constexpr const storage&
@@ -233,11 +233,11 @@ struct fmt::formatter<ethcore::fixed_hash<Bytes>>
 
         if (lower)
         {
-            for (auto&& b: hash) { out = format_to(out, "{:02x}", std::to_integer<unsigned char>(b)); }
+            for (auto&& b: hash) { out = format_to(out, "{:02x}", std::to_integer<std::uint8_t>(b)); }
         }
         else
         {
-            for (auto&& b: hash) { out = format_to(out, "{:02X}", std::to_integer<unsigned char>(b)); }
+            for (auto&& b: hash) { out = format_to(out, "{:02X}", std::to_integer<std::uint8_t>(b)); }
         }
 
         return out;
@@ -254,7 +254,7 @@ struct std::hash<ethcore::fixed_hash<Bytes>>
 
         for (auto&& b: h)
         {
-            auto cur_hash = std::hash<unsigned char>()(std::to_integer<unsigned char>(b));
+            auto cur_hash = std::hash<std::uint8_t>()(std::to_integer<std::uint8_t>(b));
             result ^= cur_hash + 0x9e3779b9 + (result << 6) + (result >> 2); // same as in boost::hash_combine
         }
         return result;
