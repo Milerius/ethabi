@@ -30,7 +30,7 @@ jobs:
         key: ${{ runner.os }}-dependencies
 
     - name: configure
-      run: cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION -DProject_ENABLE_CODE_COVERAGE=1
+      run: cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION -Dethabi_ENABLE_CODE_COVERAGE=1
 
     - name: build
       run: cmake --build build --config $BUILD_TYPE -j4
