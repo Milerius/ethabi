@@ -10,6 +10,7 @@
 #include <fmt/format.h>
 #include <range/v3/algorithm/all_of.hpp>
 #include <range/v3/range_concepts.hpp>
+#include <range/v3/view/enumerate.hpp>
 #include <tl/expected.hpp>
 
 namespace ethcore
@@ -40,6 +41,20 @@ namespace ethcore
         explicit constexpr fixed_hash(R&& r) noexcept
         {
             std::copy_n(r.begin(), Bytes, bytes_.begin());
+        }
+
+        template <details::range_of<std::uint8_t> R>
+        explicit constexpr fixed_hash(R&& r) noexcept
+        {
+            assert(r.size() >= Bytes);
+            for (auto&& [idx, cur]: ranges::views::enumerate(r))
+            {
+                bytes_[idx] = std::byte(cur);
+                if (idx == Bytes)
+                {
+                    break;
+                }
+            }
         }
 
         static tl::expected<fixed_hash, std::errc>

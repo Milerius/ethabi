@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <unordered_set>
+#include <vector>
 
 #include <ethcore/fixed_hash.hpp>
 
@@ -17,6 +18,22 @@ get_sample_hash()
     std::array<std::byte, 256 / 8> arr{};
     std::generate(arr.begin(), arr.end(), [n = 0]() mutable { return std::byte(n++); });
     return h256(arr);
+}
+
+auto
+get_sample_vector()
+{
+    std::vector<std::byte> data(32);
+    std::generate(data.begin(), data.end(), [n = 0]() mutable { return std::byte(n++); });
+    return h256(data);
+}
+
+auto
+get_sample_vector_from_uint8()
+{
+    std::vector<std::uint8_t> data(32);
+    std::generate(data.begin(), data.end(), [n = 0]() mutable { return n++; });
+    return h256(data);
 }
 
 TEST_CASE("zero")
@@ -38,6 +55,12 @@ TEST_CASE("basic")
     CHECK_EQ(hash.size(), 256 / 8);
     CHECK_EQ(hash, hash);
     CHECK_NE(hash, h256());
+}
+
+TEST_CASE("constructible_from")
+{
+    CHECK_EQ(get_sample_hash(), get_sample_vector());
+    CHECK_EQ(get_sample_hash(), get_sample_vector_from_uint8());
 }
 
 TEST_CASE("array")
